@@ -102,7 +102,7 @@ export default function App() {
     // You'll know what to do! Use log statements or breakpoints
     // to inspect the response from the server.
     setMessage("");
-    setSpinnerOn(true);
+    // setSpinnerOn(true);
     const token = localStorage.getItem("token");
     axios
       .post("http://localhost:9000/api/articles", article, {
@@ -113,16 +113,16 @@ export default function App() {
       .then((res) => {
         setMessage(res.data.message);
         setArticles([...articles, res.data.article]);
+
+        // setSpinnerOn(false);
       })
       .catch((err) => {
         console.error({ err });
-      })
-      .finally(() => {
-        setSpinnerOn(false);
+        // setSpinnerOn(false);
       });
   };
 
-  const updateArticle = (article_id, article) => {
+  const updateArticle = ({ article_id, article }) => {
     // ✨ implement
     // You got this!
     setMessage("");
@@ -143,12 +143,12 @@ export default function App() {
             } else return art;
           })
         );
+        setCurrentArticleId();
+        setSpinnerOn(false);
       })
       .catch((err) => {
-        console.error({ err });
-      })
-      .finally(() => {
         setSpinnerOn(false);
+        console.error({ err });
       });
   };
 
@@ -198,7 +198,7 @@ export default function App() {
           <NavLink id='loginScreen' to='/'>
             Login
           </NavLink>
-          <NavLink id='articlesScreen' to='/articles'>
+          <NavLink id='articlesScreen' to={localStorage.getItem("token") ? "/articles" : "/"}>
             Articles
           </NavLink>
         </nav>
@@ -213,6 +213,7 @@ export default function App() {
                   postArticle={postArticle}
                   currentArticleId={currentArticleId}
                   setCurrentArticleId={setCurrentArticleId}
+                  currentArticle={articles.find((a) => a.article_id === currentArticleId)}
                 />
                 <Articles
                   getArticles={getArticles}

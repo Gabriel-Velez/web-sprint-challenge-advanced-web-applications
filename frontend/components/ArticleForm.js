@@ -9,6 +9,7 @@ export default function ArticleForm({
   updateArticle,
   currentArticleId,
   setCurrentArticleId,
+  currentArticle,
 }) {
   const [values, setValues] = useState(initialFormValues);
   const [disabled, setDisabled] = useState(true);
@@ -19,33 +20,15 @@ export default function ArticleForm({
     // Every time the `currentArticle` prop changes, we should check it for truthiness:
     // if it's truthy, we should set its title, text and topic into the corresponding
     // values of the form. If it's not, we should reset the form back to initial values.
-    if (currentArticleId) {
-      const token = localStorage.getItem("token");
-      axios
-        .get(`http://localhost:9000/api/articles/`, {
-          headers: {
-            authorization: token,
-          },
-        })
-        .then((res) => {
-          console.log(currentArticleId);
-          console.log(res.data.articles[currentArticleId - 1]);
-          const theArticle = res.data.articles[currentArticleId - 1];
-          setValues({
-            title: theArticle.title,
-            text: theArticle.text,
-            topic: theArticle.topic,
-          });
-        })
-        .catch((err) => {
-          console.error({ err });
-        });
+    if (currentArticle) {
+      setValues(currentArticle);
     } else setValues(initialFormValues);
-  }, [currentArticleId]);
+  }, [currentArticle]);
 
   const onChange = (evt) => {
     const { id, value } = evt.target;
     setValues({ ...values, [id]: value });
+
     const title = document.querySelector("#title").value.length > 0 ? true : false;
     const text = document.querySelector("#text").value.length > 0 ? true : false;
     const topic = document.querySelector("#topic").value.length > 0 ? true : false;
@@ -59,12 +42,12 @@ export default function ArticleForm({
     // ✨ implement
     // We must submit a new post or update an existing one,
     // depending on the truthyness of the `currentArticle` prop.
-    if (currentArticleId === undefined) postArticle(values);
+    if (currentArticle === undefined) postArticle(values);
     else {
-      console.log("updating article with this id: ", currentArticleId);
-      updateArticle(currentArticleId, values);
+      updateArticle({ article_id: currentArticleId, article: values });
     }
     setValues(initialFormValues);
+    console.log(values);
     setDisabled(true);
   };
 

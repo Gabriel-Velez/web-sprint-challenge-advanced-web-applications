@@ -22,17 +22,16 @@ export default function Articles({ getArticles, articles, setCurrentArticleId, d
         ? "No articles yet"
         : articles.map((art) => {
             return (
-              <div className='article' key={art?.article_id}>
+              <div className='article' key={art.article_id}>
                 <div>
-                  <h3>{art?.title}</h3>
-                  <p>{art?.text}</p>
-                  <p>Topic: {art?.topic}</p>
+                  <h3>{art.title}</h3>
+                  <p>{art.text}</p>
+                  <p>Topic: {art.topic}</p>
                 </div>
                 <div>
                   <button
                     onClick={() => {
-                      setCurrentArticleId(art?.article_id);
-                      console.log("went of on article id: ", art?.article_id);
+                      setCurrentArticleId(art.article_id);
                     }}>
                     Edit
                   </button>
